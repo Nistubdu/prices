@@ -9,3 +9,6 @@
 .idea/compiler.xml
 .idea/misc.xml
 target/classes/Unite.class
+target/classes/PriceIdentity.class
+target/classes/Unite.class
+target/test-classes/UnitTest.class
