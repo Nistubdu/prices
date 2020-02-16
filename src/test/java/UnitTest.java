@@ -1,15 +1,12 @@
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 public class UnitTest {
 
@@ -46,10 +43,10 @@ public class UnitTest {
                     Unite.simpleDateFormat.parse("12.01.2013 00:00:00"),
                     Unite.simpleDateFormat.parse("13.01.2013 00:00:00"), 4000));
 
-
+/*
             incomingPrices.add( new PriceIdentity("6654"  , 1, 2,
                     Unite.simpleDateFormat.parse("11.02.2012 00:00:00"),
-                    Unite.simpleDateFormat.parse("15.02.2014 00:00:00"), 77000));
+                    Unite.simpleDateFormat.parse("15.02.2014 00:00:00"), 77000));*/
 
         }   catch (ParseException e)    {
             System.out.println("date parsing exception " + e.getMessage());
@@ -67,8 +64,7 @@ public class UnitTest {
 
     @Test
     public void runTest()    {
-
-        Set<PriceIdentity> priceIdentities = unite.run(currentPrices, incomingPrices);
+        unite.run(currentPrices, incomingPrices);
     }
 
     /*
@@ -78,10 +74,8 @@ public class UnitTest {
     @Test
     public void rangeMinusDurationTest() {
 
-        for ( PriceIdentity priceIdentity : incomingPrices ) {
-            assertThat(priceIdentity.getEnd().getTime(),
-                    greaterThan(priceIdentity.getStart().getTime()));
-        }
+        for ( PriceIdentity priceIdentity : incomingPrices )
+            assertTrue(priceIdentity.getEnd().getTime() > priceIdentity.getStart().getTime());
     }
 
     /*
@@ -92,8 +86,7 @@ public class UnitTest {
     public void valueTest() {
 
         for ( PriceIdentity priceIdentity : incomingPrices )
-            assertThat( priceIdentity.getValue(), greaterThan( 0L ));
-
+            assertTrue( priceIdentity.getValue() > 0L );
     }
 
     /*
@@ -101,7 +94,6 @@ public class UnitTest {
     current prices are already in DB
      */
     @Test
-    @Ignore
     public void priceCrossingTest() {
 
         for ( PriceIdentity priceIdentity : incomingPrices )
@@ -123,11 +115,8 @@ public class UnitTest {
                 if ( priceIdentity.getPriceId() != priceIdentityNext.getPriceId())
                     continue;
 
-                assertThat(priceIdentityNext.getEnd().getTime(),
-                        greaterThan(priceIdentity.getStart().getTime()));
-
-                assertThat(priceIdentity.getStart().getTime(),
-                        greaterThan(priceIdentityNext.getEnd().getTime()));
+                assertTrue( "New prices are crossing ", priceIdentityNext.getEnd().before( priceIdentity.getStart() ) ||
+                        priceIdentityNext.getStart().after( priceIdentity.getEnd()) );
             }
     }
 
@@ -135,6 +124,6 @@ public class UnitTest {
     public void zeroDurationTest()  {
 
         for ( PriceIdentity priceIdentity : incomingPrices )
-            assertThat(priceIdentity.getStart(), not( priceIdentity.getEnd() ));
+            assertNotEquals (priceIdentity.getStartLong(), priceIdentity.getEndLong() );
     }
 }

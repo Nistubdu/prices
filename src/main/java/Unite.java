@@ -23,7 +23,10 @@ public class Unite {
         incomingPrices.stream()
                 .filter( incomingPrice -> !cross( incomingPrice, currentPrices ) )
                 .forEach( result::add );
-        
+
+ //       incomingPrices.stream()
+   //             .filter( incomingPrice -> )
+
         return result;
     }
 
