@@ -1,10 +1,12 @@
 import org.jetbrains.annotations.NotNull;
-
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Random;
 
 public class PriceIdentity {
+
+    public final static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 
     private Long id;
 
@@ -99,13 +101,12 @@ public class PriceIdentity {
     @Override
     public String toString() {
         return "PriceIdentity{" +
-                "id=" + id +
-                ", productCode='" + productCode + '\'' +
-                ", priceId=" + priceId +
-                ", depId=" + depId +
-                ", start=" + start +
-                ", end=" + end +
-                ", value=" + value +
+                " code='" + productCode + '\'' +
+                ", prId=" + priceId +
+                ", dept=" + depId +
+                ", bgn=" + simpleDateFormat.format( start ) +
+                ", end=" + simpleDateFormat.format( end )+
+                ", val=" + value +
                 '}';
     }
 

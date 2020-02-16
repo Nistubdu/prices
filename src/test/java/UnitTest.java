@@ -4,7 +4,9 @@ import org.junit.Test;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.Assert.*;
 
@@ -24,29 +26,24 @@ public class UnitTest {
             incomingPrices = new ArrayList<>();
 
             currentPrices.add( new PriceIdentity( "122856", 1, 1,
-                    Unite.simpleDateFormat.parse("01.01.2013 00:00:00"),
-                    Unite.simpleDateFormat.parse("31.01.2013 23:59:59"), 11000));
+                    PriceIdentity.simpleDateFormat.parse("01.01.2013 00:00:00"),
+                    PriceIdentity.simpleDateFormat.parse("31.01.2013 23:59:59"), 11000));
             currentPrices.add( new PriceIdentity("122856", 2, 1,
-                    Unite.simpleDateFormat.parse("10.01.2013 00:00:00"),
-                    Unite.simpleDateFormat.parse("20.01.2013 23:59:59"), 99000));
+                    PriceIdentity.simpleDateFormat.parse("10.01.2013 00:00:00"),
+                    PriceIdentity.simpleDateFormat.parse("20.01.2013 23:59:59"), 99000));
             currentPrices.add( new PriceIdentity("6654"  , 1, 2,
-                    Unite.simpleDateFormat.parse("01.01.2013 00:00:00"),
-                    Unite.simpleDateFormat.parse("31.01.2013 00:00:00"), 5000));
+                    PriceIdentity.simpleDateFormat.parse("01.01.2013 00:00:00"),
+                    PriceIdentity.simpleDateFormat.parse("31.01.2013 00:00:00"), 5000));
 
             incomingPrices.add( new PriceIdentity("122856", 1, 1,
-                    Unite.simpleDateFormat.parse("20.01.2013 00:00:00"),
-                    Unite.simpleDateFormat.parse("20.02.2013 23:59:59"), 11000));
+                    PriceIdentity.simpleDateFormat.parse("20.01.2013 00:00:00"),
+                    PriceIdentity.simpleDateFormat.parse("20.02.2013 23:59:59"), 11000));
             incomingPrices.add( new PriceIdentity("122856", 2, 1,
-                    Unite.simpleDateFormat.parse("15.01.2013 00:00:00"),
-                    Unite.simpleDateFormat.parse("25.01.2013 23:59:59"), 92000));
+                    PriceIdentity.simpleDateFormat.parse("15.01.2013 00:00:00"),
+                    PriceIdentity.simpleDateFormat.parse("25.01.2013 23:59:59"), 92000));
             incomingPrices.add( new PriceIdentity("6654"  , 1, 2,
-                    Unite.simpleDateFormat.parse("12.01.2013 00:00:00"),
-                    Unite.simpleDateFormat.parse("13.01.2013 00:00:00"), 4000));
-
-/*
-            incomingPrices.add( new PriceIdentity("6654"  , 1, 2,
-                    Unite.simpleDateFormat.parse("11.02.2012 00:00:00"),
-                    Unite.simpleDateFormat.parse("15.02.2014 00:00:00"), 77000));*/
+                    PriceIdentity.simpleDateFormat.parse("12.01.2013 00:00:00"),
+                    PriceIdentity.simpleDateFormat.parse("13.01.2013 00:00:00"), 4000));
 
         }   catch (ParseException e)    {
             System.out.println("date parsing exception " + e.getMessage());
@@ -63,8 +60,11 @@ public class UnitTest {
     }
 
     @Test
-    public void runTest()    {
-        unite.run(currentPrices, incomingPrices);
+    public void run()    {
+
+        Set<PriceIdentity> priceIdentitySet = unite.run(currentPrices, incomingPrices);
+        priceIdentitySet.forEach( System.out::println );
+
     }
 
     /*
