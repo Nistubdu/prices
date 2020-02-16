@@ -72,6 +72,10 @@ public class PriceIdentity {
         this.end = end;
     }
 
+    public Long getEndLong() {
+        return end.getTime();
+    }
+
     public long getValue() {
         return value;
     }

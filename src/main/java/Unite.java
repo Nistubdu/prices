@@ -1,100 +1,40 @@
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Unite {
 
     public final static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 
-    private class ProductPriceInDept {
+    public Set<PriceIdentity> run(List<PriceIdentity> currentPrices, List<PriceIdentity> incomingPrices)   {
 
-        private String productCode; // product code
+        Set<PriceIdentity> result = new HashSet<>();
 
-        int priceId; // price
+        // unique current product codes
+        String[] codes = currentPrices.stream().map(PriceIdentity::getProductCode).distinct().toArray(String[]::new);
 
-        int depId; // dept
+        // all new products
+        incomingPrices.stream()
+                .filter( incomingPrice ->
+                        !Arrays.asList(codes).contains( incomingPrice.getProductCode() )
+                )
+                .forEach( result::add );
 
-        public String getProductCode() {
-            return productCode;
-        }
-
-        public void setProductCode(String productCode) {
-            this.productCode = productCode;
-        }
-
-        public int getPriceId() {
-            return priceId;
-        }
-
-        public void setPriceId(int priceId) {
-            this.priceId = priceId;
-        }
-
-        public int getDepId() {
-            return depId;
-        }
-
-        public void setDepId(int depId) {
-            this.depId = depId;
-        }
-
-        public ProductPriceInDept(String productCode, int priceId, int depId) {
-
-            this.productCode = productCode;
-            this.priceId = priceId;
-            this.depId = depId;
-        }
-
-        @Override
-        public String toString() {
-            return "ProductPriceInDept{" +
-                    "productCode='" + productCode + '\'' +
-                    ", priceId=" + priceId +
-                    ", depId=" + depId +
-                    '}';
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            ProductPriceInDept that = (ProductPriceInDept) o;
-            return priceId == that.priceId &&
-                    depId == that.depId &&
-                    productCode.equals(that.productCode);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(productCode, priceId, depId);
-        }
-    }
-    public List<PriceIdentity> run(List<PriceIdentity> currentPrices, List<PriceIdentity> incomingPrices)   {
-
-        Set<ProductPriceInDept> productInDeptSet = new HashSet<>();
-
-        List<PriceIdentity> priceIdentities = Stream.concat( currentPrices.stream(), incomingPrices.stream() )
-                .sorted( Comparator.comparingLong( PriceIdentity::getStartLong) ).collect(Collectors.toList());
-
-
-        for ( PriceIdentity priceIdentity : priceIdentities )
-            productInDeptSet.add( new ProductPriceInDept( priceIdentity.getProductCode(), priceIdentity.getPriceId(), priceIdentity.getDepId()) );
-
-        for ( ProductPriceInDept productInDept : productInDeptSet)
-            joinOneKindOfPrice(productInDept, priceIdentities);
-
-        return priceIdentities;
+        // no crosses with current prices
+        incomingPrices.stream()
+                .filter( incomingPrice -> !cross( incomingPrice, currentPrices ) )
+                .forEach( result::add );
+        
+        return result;
     }
 
-    private void joinOneKindOfPrice(ProductPriceInDept productInDept, List<PriceIdentity> priceIdentities)  {
+    private boolean cross(PriceIdentity incomingPrice, List<PriceIdentity> currentPrices) {
 
-        for ( PriceIdentity priceIdentity : priceIdentities)    {
-            if (priceIdentity.getDepId() == productInDept.getDepId() &&
-                    priceIdentity.getPriceId() == productInDept.getPriceId() &&
-                    priceIdentity.getProductCode().equals( productInDept.getProductCode()) )
-                System.out.println( "--" );
-
-        }
+        return currentPrices.stream()
+                .filter(currentPrice -> incomingPrice.getProductCode().equals(currentPrice.getProductCode()))
+                .filter(currentPrice -> incomingPrice.getPriceId() == currentPrice.getPriceId())
+                .filter(currentPrice -> incomingPrice.getDepId() == currentPrice.getDepId())
+                .noneMatch(currentPrice ->
+                        incomingPrice.getStart().after(currentPrice.getEnd()) ||
+                                incomingPrice.getEnd().before(currentPrice.getStart()));
     }
 }
