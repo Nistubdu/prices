@@ -62,8 +62,8 @@ public class UnitTest {
     @Test
     public void run()    {
 
-        Set<PriceIdentity> priceIdentitySet = unite.run(currentPrices, incomingPrices);
-        priceIdentitySet.forEach( System.out::println );
+        unite.run(currentPrices, incomingPrices)
+                .forEach( System.out::println );
 
     }
 
