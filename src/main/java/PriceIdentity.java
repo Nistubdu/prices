@@ -1,19 +1,22 @@
-import java.util.Calendar;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Date;
 import java.util.Objects;
+import java.util.Random;
 
 public class PriceIdentity {
 
-    private long id;
+    private Long id;
 
-    private String productCode;
+    private String productCode; // product code
 
-    int priceId;
+    int priceId; // price
 
-    int depId;
+    int depId; // dept
 
-    private Calendar start;
+    private Date start;
 
-    private Calendar end;
+    private Date end;
 
     private long value;
 
@@ -49,19 +52,23 @@ public class PriceIdentity {
         this.depId = depId;
     }
 
-    public Calendar getStart() {
+    public Date getStart() {
         return start;
     }
 
-    public void setStart(Calendar start) {
+    public void setStart(Date start) {
         this.start = start;
     }
 
-    public Calendar getEnd() {
+    public Long getStartLong() {
+        return start.getTime();
+    }
+
+    public Date getEnd() {
         return end;
     }
 
-    public void setEnd(Calendar end) {
+    public void setEnd(Date end) {
         this.end = end;
     }
 
@@ -70,6 +77,18 @@ public class PriceIdentity {
     }
 
     public void setValue(long value) {
+        this.value = value;
+    }
+
+    // suppose all identities are ok after incoming tests
+    public PriceIdentity(@NotNull String productCode, int priceId, int depId, @NotNull Date start, @NotNull Date end, long value) {
+
+        this.id = new Random().nextLong();
+        this.productCode = productCode;
+        this.priceId = priceId;
+        this.depId = depId;
+        this.start = start;
+        this.end = end;
         this.value = value;
     }
 
@@ -88,13 +107,15 @@ public class PriceIdentity {
 
     @Override
     public boolean equals(Object o) {
+
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PriceIdentity that = (PriceIdentity) o;
-        return id == that.id &&
-                priceId == that.priceId &&
+
+        return priceId == that.priceId &&
                 depId == that.depId &&
                 value == that.value &&
+                Objects.equals(id, that.id) &&
                 productCode.equals(that.productCode) &&
                 start.equals(that.start) &&
                 end.equals(that.end);
@@ -104,4 +125,5 @@ public class PriceIdentity {
     public int hashCode() {
         return Objects.hash(id, productCode, priceId, depId, start, end, value);
     }
+
 }
